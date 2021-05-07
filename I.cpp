@@ -40,6 +40,57 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 #define debug(x...)
 #endif
 
+void solve()
+{
+	int n ;
+	cin >> n ;
+	vector<double> head(n + 1) , tail(n + 1);
+
+	for (int i = 1 ; i <= n ; i++)
+		cin >> head[i] , tail[i] = 1 - head[i];
+
+	vector<vector<double>>dp (n + 1, vector<double>(n + 1, 0));
+	//dp[coin][head_count];
+	dp[0][0] = 1 ;
+
+	// if we have some coins probab of 0 head_count = all tails ;
+	for (int i = 1 ; i <= n ; i++)
+		dp[i][0] = dp[i - 1][0] * tail[i];
+
+	for (int i = 1 ; i <= n ; i++)
+	{
+		for (int j = 1 ; j <= i ; j++)
+		{
+			// take as head
+			dp[i][j] += head[i] * dp[i - 1][j - 1];
+			// take a tail
+			dp[i][j] += tail[i] * dp[i - 1][j];
+		}
+	}
+	// atleast n/2+1 heads;
+	double ans = 0;
+	for (int j = n; j >= n / 2 + 1 ; j--)
+		ans += dp[n][j];
+
+	cout << fixed << setprecision(10) << ans << endl;
+
+}
+int main() {
+	// your code goes here
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+#ifndef ONLINE_JUDGE
+	freopen("input.txt", "r", stdin);
+	freopen("error.txt", "w", stderr);
+	freopen("output.txt", "w", stdout);
+#endif
+
+	solve();
+
+	return 0;
+}
+
+/*
 double  prob ( double * head , double * tail , int n , int cnt)
 {
 	if (n == 0)
@@ -65,30 +116,13 @@ void solve()
 {
 	int n ;
 	cin >>  n ;
-
 	double head[n], tail [n] ;
 	for (int i = 0 ; i < n ; i++)
 	{
 		cin >> head[i];
 		tail[i] = 1 - head[i];
 	}
-
-
 	double res  = prob(head , tail , n , n / 2 + 1) ;
-
 	cout << fixed << setprecision(9) << res << endl;
 }
-int main() {
-	// your code goes here
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-#ifndef ONLINE_JUDGE
-	freopen("input.txt", "r", stdin);
-	freopen("error.txt", "w", stderr);
-	freopen("output.txt", "w", stdout);
-#endif
-
-	solve();
-
-	return 0;
-}
+*/
